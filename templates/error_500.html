@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}500 - Server Error{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container text-center">
+        <div style="font-size: 8rem; margin-bottom: var(--spacing-md);">⚠️</div>
+        <h1 style="font-size: 4rem; margin-bottom: var(--spacing-md);">500</h1>
+        <h2 style="margin-bottom: var(--spacing-md);">Internal Server Error</h2>
+        <p
+            style="font-size: 1.125rem; color: var(--text-secondary); max-width: 500px; margin: 0 auto var(--spacing-xl);">
+            Something went wrong on our end. Our team has been notified and is working on it.
+        </p>
+        <div style="display: flex; gap: var(--spacing-md); justify-content: center;">
+            <a href="/" class="btn btn-primary">Go Home</a>
+            <a href="javascript:location.reload()" class="btn btn-secondary">Try Again</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

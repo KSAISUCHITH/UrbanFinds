@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Properties{% endblock %}
+
+{% block content %}
+<section class="section-tight">
+    <div class="container">
+        <div class="text-center mb-xl">
+            <h1>Discover Properties</h1>
+            <p style="font-size: 1.125rem;">Find your perfect space from our curated collection</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filters-grid">
+                <div class="form-group" style="margin: 0;">
+                    <label for="search" class="form-label">Search</label>
+                    <input type="text" id="search" class="form-input" placeholder="Search by title or address...">
+                </div>
+
+                <div class="form-group" style="margin: 0;">
+                    <label for="typeFilter" class="form-label">Property Type</label>
+                    <select id="typeFilter" class="form-select">
+                        <option value="all">All Types</option>
+                        <option value="land">Land</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="house">House</option>
+                        <option value="commercial">Commercial</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin: 0;">
+                    <label for="minPrice" class="form-label">Min Price</label>
+                    <input type="number" id="minPrice" class="form-input" placeholder="0" min="0" step="100000">
+                </div>
+
+                <div class="form-group" style="margin: 0;">
+                    <label for="maxPrice" class="form-label">Max Price</label>
+                    <input type="number" id="maxPrice" class="form-input" placeholder="No limit" min="0" step="100000">
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Count -->
+        <div id="resultsCount" class="mb-md" style="color: var(--text-secondary); font-size: 0.95rem;">
+            {{ properties|length }} properties found
+        </div>
+
+        <!-- Properties Grid -->
+        <div class="grid grid-3">
+            {% for property in properties %}
+            <div class="property-card" data-type="{{ property.type }}" data-price="{{ property.price }}"
+                onclick="window.location.href='/properties/{{ property.property_id }}'">
+                <img src="{{ property.images[0] if property.images else 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop' }}"
+                    alt="{{ property.type|title }}" class="property-image">
+                <div class="property-content">
+                    <div class="property-type">{{ property.type|upper }}</div>
+                    <h3 class="property-title">{{ property.address[:50] }}{% if property.address|length > 50 %}...{%
+                        endif %}</h3>
+                    <p class="property-address">{{ property.address }}</p>
+                    <div class="property-price">
+                        ₹{{ "{:,.0f}".format(property.price) }}
+                        <span class="property-price-label">/ total</span>
+                    </div>
+                    {% if property.description %}
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: var(--spacing-sm);">
+                        {{ property.description[:100] }}{% if property.description|length > 100 %}...{% endif %}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <div class="empty-state-icon">🔍</div>
+            <h3 class="empty-state-title">No Properties Found</h3>
+            <p class="empty-state-text">Try adjusting your filters to see more results</p>
+        </div>
+
+        {% if properties|length == 0 %}
+        <div class="empty-state">
+            <div class="empty-state-icon">🏢</div>
+            <h3 class="empty-state-title">No Properties Available</h3>
+            <p class="empty-state-text">Check back soon for new listings</p>
+            {% if session.get('role') == 'owner' %}
+            <a href="/properties/add" class="btn btn-primary">Add Your First Property</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<section class="section-tight">
+    <div class="container">
+        <div class="mb-xl">
+            <h1>Admin Dashboard</h1>
+            <p style="color: var(--text-secondary);">Platform management and oversight</p>
+        </div>
+
+        <!-- Platform Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.total_users }}</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.active_users }}</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.total_properties }}</div>
+                <div class="stat-label">Total Properties</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.active_properties }}</div>
+                <div class="stat-label">Active Properties</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.total_applications }}</div>
+                <div class="stat-label">Total Applications</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.pending_applications }}</div>
+                <div class="stat-label">Pending Applications</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mb-xl">
+            <h2 class="mb-md">Quick Actions</h2>
+            <div class="grid grid-4">
+                <a href="/admin/users" class="card" style="text-decoration: none; display: block;">
+                    <div style="font-size: 2.5rem; margin-bottom: var(--spacing-sm);">👥</div>
+                    <h3>Manage Users</h3>
+                    <p>View and manage all platform users</p>
+                </a>
+
+                <a href="/admin/properties" class="card" style="text-decoration: none; display: block;">
+                    <div style="font-size: 2.5rem; margin-bottom: var(--spacing-sm);">🏢</div>
+                    <h3>Manage Properties</h3>
+                    <p>Moderate property listings</p>
+                </a>
+
+                <a href="/admin/applications" class="card" style="text-decoration: none; display: block;">
+                    <div style="font-size: 2.5rem; margin-bottom: var(--spacing-sm);">📋</div>
+                    <h3>View Applications</h3>
+                    <p>Monitor all applications</p>
+                </a>
+
+                <a href="/health" class="card" style="text-decoration: none; display: block;">
+                    <div style="font-size: 2.5rem; margin-bottom: var(--spacing-sm);">💚</div>
+                    <h3>System Health</h3>
+                    <p>Check platform status</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: var(--spacing-xl);">
+            <!-- Recent Users -->
+            <div>
+                <h2 class="mb-md">Recent Users</h2>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in recent_users[:5] %}
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 600;">{{ user.name }}</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-tertiary);">{{ user.email }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge badge-primary">{{ user.role|upper }}</span>
+                                </td>
+                                <td>
+                                    <span
+                                        class="badge badge-{{ 'success' if user.status == 'active' else 'secondary' }}">
+                                        {{ user.status|title }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recent Properties -->
+            <div>
+                <h2 class="mb-md">Recent Properties</h2>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for property in recent_properties[:5] %}
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 600;">{{ property.address[:30] }}...</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-tertiary);">
+                                        ₹{{ "{:,.0f}".format(property.price) }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge badge-primary">{{ property.type|upper }}</span>
+                                </td>
+                                <td>
+                                    <span
+                                        class="badge badge-{{ 'success' if property.status == 'active' else 'secondary' }}">
+                                        {{ property.status|title }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

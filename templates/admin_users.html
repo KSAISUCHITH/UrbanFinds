@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Users{% endblock %}
+
+{% block content %}
+<section class="section-tight">
+    <div class="container">
+        <div class="flex flex-between mb-xl" style="align-items: center;">
+            <div>
+                <h1>User Management</h1>
+                <p style="color: var(--text-secondary);">Manage all platform users</p>
+            </div>
+            <a href="/dashboard/admin" class="btn btn-ghost">
+                ← Back to Dashboard
+            </a>
+        </div>
+
+        {% if users %}
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>
+                            <div style="font-weight: 600;">{{ user.name }}</div>
+                            <div style="font-size: 0.875rem; color: var(--text-tertiary); margin-top: 4px;">
+                                {{ user.email }}
+                            </div>
+                            <div
+                                style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 4px; font-family: monospace;">
+                                ID: {{ user.user_id }}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge badge-{{ 'primary' if user.role == 'owner' else 'secondary' }}">
+                                {{ user.role|upper }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge badge-{{ 'success' if user.status == 'active' else 'danger' }}">
+                                {{ user.status|upper }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if user.status == 'active' %}
+                            <button onclick="toggleUserStatus('{{ user.user_id }}', 'active')"
+                                class="btn btn-sm btn-danger">
+                                Disable
+                            </button>
+                            {% else %}
+                            <button onclick="toggleUserStatus('{{ user.user_id }}', 'disabled')"
+                                class="btn btn-sm btn-success">
+                                Enable
+                            </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">👥</div>
+            <h3 class="empty-state-title">No Users</h3>
+            <p class="empty-state-text">No users registered yet</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

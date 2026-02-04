@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Applications{% endblock %}
+
+{% block content %}
+<section class="section-tight">
+    <div class="container">
+        <h1 class="mb-xl">Property Applications</h1>
+
+        {% if applications %}
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Applicant</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr>
+                        <td>
+                            <div style="font-weight: 600;">{{ app.property_address }}</div>
+                            <div style="font-size: 0.875rem; color: var(--text-tertiary);">
+                                {{ app.property_type|title }} - ₹{{ "{:,.0f}".format(app.property_price) }}
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600;">{{ app.seeker_name }}</div>
+                            <div style="font-size: 0.875rem; color: var(--text-tertiary);">{{ app.seeker_email }}</div>
+                        </td>
+                        <td>{{ app.request_date }}</td>
+                        <td>
+                            <span
+                                class="badge badge-{{ 'warning' if app.status == 'pending' else 'success' if app.status == 'approved' else 'danger' }}">
+                                {{ app.status|upper }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if app.status == 'pending' %}
+                            <div style="display: flex; gap: var(--spacing-xs);">
+                                <button onclick="updateApplicationStatus('{{ app.application_id }}', 'approved')"
+                                    class="btn btn-sm btn-success">
+                                    Approve
+                                </button>
+                                <button onclick="updateApplicationStatus('{{ app.application_id }}', 'rejected')"
+                                    class="btn btn-sm btn-danger">
+                                    Reject
+                                </button>
+                            </div>
+                            {% else %}
+                            <span style="color: var(--text-tertiary); font-size: 0.875rem;">{{ app.status|title
+                                }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <h3 class="empty-state-title">No Applications</h3>
+            <p class="empty-state-text">Applications will appear here when tenants apply for your properties</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

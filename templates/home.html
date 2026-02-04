@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block meta_description %}UrbanFinds - Find your perfect property. Browse apartments, houses, land, and commercial
+spaces with our cloud-powered platform.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1>Find Your Perfect Property</h1>
+        <p>Discover premium real estate opportunities with UrbanFinds. Whether you're seeking a home, investing in land,
+            or expanding your business, we've got you covered.</p>
+        <div style="display: flex; gap: var(--spacing-md); justify-content: center; margin-top: var(--spacing-lg);">
+            <a href="/properties" class="btn btn-primary btn-lg">Browse Properties</a>
+            {% if not session.get('user_id') %}
+            <a href="/register" class="btn btn-secondary btn-lg">Get Started</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="section">
+    <div class="container">
+        <h2 class="text-center mb-xl">Why Choose UrbanFinds?</h2>
+
+        <div class="grid grid-3">
+            <div class="card">
+                <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">🏠</div>
+                <h3>Premium Listings</h3>
+                <p>Access a curated selection of high-quality properties across all categories - apartments, houses,
+                    land, and commercial spaces.</p>
+            </div>
+
+            <div class="card">
+                <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">⚡</div>
+                <h3>Cloud-Powered</h3>
+                <p>Built on AWS infrastructure with DynamoDB, SNS, and EC2 for enterprise-grade reliability and
+                    performance.</p>
+            </div>
+
+            <div class="card">
+                <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">🔔</div>
+                <h3>Real-Time Notifications</h3>
+                <p>Stay updated with instant notifications for application status changes, new properties, and important
+                    updates.</p>
+            </div>
+
+            <div class="card">
+                <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">🎯</div>
+                <h3>Smart Filtering</h3>
+                <p>Find exactly what you're looking for with advanced search and filtering by type, price range, and
+                    location.</p>
+            </div>
+
+            <div class="card">
+                <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">📊</div>
+                <h3>Owner Dashboard</h3>
+                <p>Property owners get comprehensive analytics, application management, and performance insights.</p>
+            </div>
+
+            <div class="card">
+                <div style="font-size: 3rem; margin-bottom: var(--spacing-md);">🛡️</div>
+                <h3>Secure & Reliable</h3>
+                <p>Enterprise-grade security with IAM roles, encrypted data, and role-based access control.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="section" style="background-color: var(--bg-secondary);">
+    <div class="container">
+        <h2 class="text-center mb-xl">How It Works</h2>
+
+        <div class="grid grid-3">
+            <div class="card">
+                <div class="badge badge-primary mb-md">Step 1</div>
+                <h3>Create Account</h3>
+                <p>Sign up as a property seeker or owner. Choose your role and complete your profile in minutes.</p>
+            </div>
+
+            <div class="card">
+                <div class="badge badge-primary mb-md">Step 2</div>
+                <h3>Browse & Apply</h3>
+                <p>Explore properties, filter by your preferences, and submit applications for properties you're
+                    interested in.</p>
+            </div>
+
+            <div class="card">
+                <div class="badge badge-primary mb-md">Step 3</div>
+                <h3>Get Notified</h3>
+                <p>Receive instant notifications when your application is reviewed. Track status in real-time.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.total_properties or 0 }}</div>
+                <div class="stat-label">Active Properties</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.total_users or 0 }}</div>
+                <div class="stat-label">Registered Users</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.total_applications or 0 }}</div>
+                <div class="stat-label">Applications</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">99.9%</div>
+                <div class="stat-label">Uptime</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+{% if not session.get('user_id') %}
+<section class="section" style="background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);">
+    <div class="container text-center">
+        <h2>Ready to Find Your Perfect Property?</h2>
+        <p style="font-size: 1.25rem; max-width: 600px; margin: var(--spacing-md) auto var(--spacing-lg);">
+            Join thousands of users who trust UrbanFinds for their property needs.
+        </p>
+        <div style="display: flex; gap: var(--spacing-md); justify-content: center;">
+            <a href="/register" class="btn btn-primary btn-lg">Create Account</a>
+            <a href="/properties" class="btn btn-secondary btn-lg">Browse Properties</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

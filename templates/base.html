@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}UrbanFinds - Cloud-Powered Property Management Platform{% endblock %}">
+    <title>{% block title %}UrbanFinds{% endblock %} | Property Management Platform</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">🏢 UrbanFinds</a>
+            
+            <ul class="navbar-nav">
+                {% if session.get('user_id') %}
+                    <!-- Authenticated User Navigation -->
+                    <li><a href="/properties" class="nav-link">Properties</a></li>
+                    
+                    {% if session.get('role') == 'tenant' %}
+                        <li><a href="/dashboard/tenant" class="nav-link">My Applications</a></li>
+                        <li><a href="/notifications" class="nav-link">Notifications</a></li>
+                    {% elif session.get('role') == 'owner' %}
+                        <li><a href="/dashboard/owner" class="nav-link">My Properties</a></li>
+                        <li><a href="/properties/add" class="nav-link">Add Property</a></li>
+                        <li><a href="/applications" class="nav-link">Applications</a></li>
+                        <li><a href="/notifications" class="nav-link">Notifications</a></li>
+                    {% elif session.get('role') == 'admin' %}
+                        <li><a href="/dashboard/admin" class="nav-link">Admin Dashboard</a></li>
+                        <li><a href="/admin/users" class="nav-link">Users</a></li>
+                        <li><a href="/admin/properties" class="nav-link">Properties</a></li>
+                        <li><a href="/admin/applications" class="nav-link">Applications</a></li>
+                    {% endif %}
+                    
+                    <li><a href="/logout" class="nav-link">Logout ({{ session.get('name') }})</a></li>
+                {% else %}
+                    <!-- Guest Navigation -->
+                    <li><a href="/" class="nav-link">Home</a></li>
+                    <li><a href="/properties" class="nav-link">Browse Properties</a></li>
+                    <li><a href="/login" class="nav-link">Login</a></li>
+                    <li><a href="/register" class="nav-link">Register</a></li>
+                    <li><a href="/admin/login" class="nav-link">Admin Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container" style="padding-top: var(--spacing-md);">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} fade-in">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2026 UrbanFinds. Cloud-Powered Property Management Platform.</p>
+                <p style="margin-top: var(--spacing-xs);">
+                    Built with Flask, DynamoDB, SNS & EC2 | Designed for Enterprise
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

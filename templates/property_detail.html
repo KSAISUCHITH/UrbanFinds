@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}{{ property.type|title }} - {{ property.address[:30] }}{% endblock %}
+
+{% block content %}
+<section class="section-tight">
+    <div class="container" style="max-width: 1000px;">
+        <!-- Back Button -->
+        <a href="/properties" class="btn btn-ghost mb-md">
+            ← Back to Properties
+        </a>
+
+        <!-- Property Images -->
+        <div style="margin-bottom: var(--spacing-xl);">
+            {% if property.images %}
+            <img src="{{ property.images[0] }}" alt="{{ property.type|title }}"
+                style="width: 100%; height: 500px; object-fit: cover; border-radius: var(--radius-lg);">
+            {% else %}
+            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&h=600&fit=crop" alt="Property"
+                style="width: 100%; height: 500px; object-fit: cover; border-radius: var(--radius-lg);">
+            {% endif %}
+        </div>
+
+        <!-- Property Details -->
+        <div class="grid" style="grid-template-columns: 2fr 1fr; gap: var(--spacing-xl);">
+            <!-- Main Content -->
+            <div>
+                <div class="badge badge-primary mb-md">{{ property.type|upper }}</div>
+                <h1 style="margin-bottom: var(--spacing-sm);">{{ property.address }}</h1>
+
+                <div class="property-price mb-lg">
+                    ₹{{ "{:,.0f}".format(property.price) }}
+                </div>
+
+                <div class="card">
+                    <h3>Description</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.8;">
+                        {{ property.description or 'No description provided.' }}
+                    </p>
+                </div>
+
+                <div class="card mt-md">
+                    <h3>Property Details</h3>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-md); margin-top: var(--spacing-md);">
+                        <div>
+                            <div
+                                style="color: var(--text-tertiary); font-size: 0.875rem; margin-bottom: var(--spacing-xs);">
+                                Type</div>
+                            <div style="font-weight: 600;">{{ property.type|title }}</div>
+                        </div>
+                        <div>
+                            <div
+                                style="color: var(--text-tertiary); font-size: 0.875rem; margin-bottom: var(--spacing-xs);">
+                                Price</div>
+                            <div style="font-weight: 600;">₹{{ "{:,.0f}".format(property.price) }}</div>
+                        </div>
+                        <div>
+                            <div
+                                style="color: var(--text-tertiary); font-size: 0.875rem; margin-bottom: var(--spacing-xs);">
+                                Status</div>
+                            <div>
+                                {% if property.status == 'active' %}
+                                <span class="badge badge-success">Active</span>
+                                {% else %}
+                                <span class="badge badge-secondary">{{ property.status|title }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div>
+                            <div
+                                style="color: var(--text-tertiary); font-size: 0.875rem; margin-bottom: var(--spacing-xs);">
+                                Property ID</div>
+                            <div style="font-family: monospace; font-size: 0.875rem;">{{ property.property_id }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div>
+                <div class="card" style="position: sticky; top: 100px;">
+                    <h3 style="margin-bottom: var(--spacing-md);">Interested?</h3>
+
+                    {% if session.get('user_id') %}
+                    {% if session.get('role') == 'tenant' %}
+                    {% if has_applied %}
+                    <div class="alert alert-info">
+                        You have already applied for this property.
+                    </div>
+                    <a href="/dashboard/tenant" class="btn btn-secondary" style="width: 100%;">
+                        View My Applications
+                    </a>
+                    {% else %}
+                    <form method="POST" action="/applications/submit">
+                        <input type="hidden" name="property_id" value="{{ property.property_id }}">
+                        <button type="submit" class="btn btn-primary"
+                            style="width: 100%; margin-bottom: var(--spacing-md);">
+                            Submit Application
+                        </button>
+                    </form>
+                    <p style="color: var(--text-tertiary); font-size: 0.875rem; text-align: center;">
+                        Submit your interest and the owner will review your application
+                    </p>
+                    {% endif %}
+                    {% elif session.get('role') == 'owner' %}
+                    {% if property.owner_id == session.get('user_id') %}
+                    <div class="alert alert-info">
+                        This is your property
+                    </div>
+                    <a href="/dashboard/owner" class="btn btn-secondary" style="width: 100%;">
+                        Manage Property
+                    </a>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        Only tenants can apply for properties
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <div class="alert alert-info">
+                        Contact the owner for more details
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md);">
+                        Login to submit an application for this property
+                    </p>
+                    <a href="/login" class="btn btn-primary" style="width: 100%; margin-bottom: var(--spacing-sm);">
+                        Login
+                    </a>
+                    <a href="/register" class="btn btn-secondary" style="width: 100%;">
+                        Create Account
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

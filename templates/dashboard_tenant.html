@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Tenant Dashboard{% endblock %}
+
+{% block content %}
+<section class="section-tight">
+    <div class="container">
+        <div class="flex flex-between mb-xl" style="align-items: center;">
+            <div>
+                <h1>My Applications</h1>
+                <p style="color: var(--text-secondary);">Track your property applications</p>
+            </div>
+            <a href="/properties" class="btn btn-primary">
+                Browse Properties
+            </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.total_applications }}</div>
+                <div class="stat-label">Total Applications</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.pending_applications }}</div>
+                <div class="stat-label">Pending</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.approved_applications }}</div>
+                <div class="stat-label">Approved</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.rejected_applications }}</div>
+                <div class="stat-label">Rejected</div>
+            </div>
+        </div>
+
+        <!-- Applications -->
+        <div>
+            <h2 class="mb-md">Application History</h2>
+
+            {% if applications %}
+            <div class="grid grid-2">
+                {% for app in applications %}
+                <div class="card">
+                    <div class="flex flex-between mb-md">
+                        <span
+                            class="badge badge-{{ 'warning' if app.status == 'pending' else 'success' if app.status == 'approved' else 'danger' }}">
+                            {{ app.status|upper }}
+                        </span>
+                        <span style="font-size: 0.875rem; color: var(--text-tertiary);">
+                            {{ app.request_date }}
+                        </span>
+                    </div>
+
+                    {% if app.property_image %}
+                    <img src="{{ app.property_image }}" alt="Property" class="card-image">
+                    {% endif %}
+
+                    <div class="badge badge-primary mb-sm">{{ app.property_type|upper }}</div>
+                    <h3 style="margin-bottom: var(--spacing-xs);">{{ app.property_address }}</h3>
+
+                    <div class="property-price mb-md" style="font-size: 1.5rem;">
+                        ₹{{ "{:,.0f}".format(app.property_price) }}
+                    </div>
+
+                    <div style="padding-top: var(--spacing-md); border-top: 1px solid var(--divider-color);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 0.875rem; color: var(--text-tertiary);">Application ID</div>
+                                <div style="font-family: monospace; font-size: 0.875rem; margin-top: 4px;">
+                                    {{ app.application_id }}
+                                </div>
+                            </div>
+                            <a href="/properties/{{ app.property_id }}" class="btn btn-sm btn-secondary">
+                                View Property
+                            </a>
+                        </div>
+                    </div>
+
+                    {% if app.status == 'approved' %}
+                    <div class="alert alert-success mt-md">
+                        🎉 Congratulations! Your application has been approved. The owner will contact you soon.
+                    </div>
+                    {% elif app.status == 'rejected' %}
+                    <div class="alert alert-error mt-md">
+                        Your application was not approved. Keep looking for other opportunities!
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info mt-md">
+                        ⏳ Your application is under review. You'll be notified once the owner makes a decision.
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">📋</div>
+                <h3 class="empty-state-title">No Applications Yet</h3>
+                <p class="empty-state-text">Start browsing properties and submit your first application</p>
+                <a href="/properties" class="btn btn-primary">Browse Properties</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

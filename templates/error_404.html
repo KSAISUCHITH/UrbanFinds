@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}404 - Page Not Found{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container text-center">
+        <div style="font-size: 8rem; margin-bottom: var(--spacing-md);">🔍</div>
+        <h1 style="font-size: 4rem; margin-bottom: var(--spacing-md);">404</h1>
+        <h2 style="margin-bottom: var(--spacing-md);">Page Not Found</h2>
+        <p
+            style="font-size: 1.125rem; color: var(--text-secondary); max-width: 500px; margin: 0 auto var(--spacing-xl);">
+            The page you're looking for doesn't exist or has been moved.
+        </p>
+        <div style="display: flex; gap: var(--spacing-md); justify-content: center;">
+            <a href="/" class="btn btn-primary">Go Home</a>
+            <a href="/properties" class="btn btn-secondary">Browse Properties</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

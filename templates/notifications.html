@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<section class="section-tight">
+    <div class="container" style="max-width: 900px;">
+        <h1 class="mb-xl">Notifications</h1>
+
+        {% if notifications %}
+        <div style="display: flex; flex-direction: column; gap: var(--spacing-md);">
+            {% for notification in notifications %}
+            <div class="card">
+                <div class="flex flex-between mb-sm">
+                    <span
+                        class="badge badge-{{ 'info' if notification.type == 'application_submitted' else 'success' if notification.type == 'application_approved' else 'danger' if notification.type == 'application_rejected' else 'warning' }}">
+                        {{ notification.type.replace('_', ' ')|title }}
+                    </span>
+                    <span style="font-size: 0.875rem; color: var(--text-tertiary);">
+                        {{ notification.timestamp }}
+                    </span>
+                </div>
+
+                <p style="color: var(--text-primary); font-size: 1rem; margin: 0;">
+                    {{ notification.message }}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">🔔</div>
+            <h3 class="empty-state-title">No Notifications</h3>
+            <p class="empty-state-text">You're all caught up! Notifications will appear here when there's activity.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

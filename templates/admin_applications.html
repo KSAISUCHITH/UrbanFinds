@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}All Applications{% endblock %}
+
+{% block content %}
+<section class="section-tight">
+    <div class="container">
+        <div class="flex flex-between mb-xl" style="align-items: center;">
+            <div>
+                <h1>All Applications</h1>
+                <p style="color: var(--text-secondary);">Monitor all platform applications</p>
+            </div>
+            <a href="/dashboard/admin" class="btn btn-ghost">
+                ← Back to Dashboard
+            </a>
+        </div>
+
+        {% if applications %}
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Application ID</th>
+                        <th>Property</th>
+                        <th>Applicant</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr>
+                        <td style="font-family: monospace; font-size: 0.875rem;">{{ app.application_id }}</td>
+                        <td>
+                            <div style="font-weight: 600;">{{ app.property_address[:40] }}...</div>
+                            <div style="font-size: 0.875rem; color: var(--text-tertiary); margin-top: 4px;">
+                                {{ app.property_type|title }}
+                            </div>
+                        </td>
+                        <td style="font-weight: 600;">{{ app.seeker_name }}</td>
+                        <td>{{ app.request_date }}</td>
+                        <td>
+                            <span
+                                class="badge badge-{{ 'warning' if app.status == 'pending' else 'success' if app.status == 'approved' else 'danger' }}">
+                                {{ app.status|upper }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <h3 class="empty-state-title">No Applications</h3>
+            <p class="empty-state-text">No applications submitted yet</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

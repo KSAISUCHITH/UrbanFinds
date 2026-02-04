@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Owner Dashboard{% endblock %}
+
+{% block content %}
+<section class="section-tight">
+    <div class="container">
+        <div class="flex flex-between mb-xl" style="align-items: center;">
+            <div>
+                <h1>Owner Dashboard</h1>
+                <p style="color: var(--text-secondary);">Manage your properties and applications</p>
+            </div>
+            <a href="/properties/add" class="btn btn-primary">
+                + Add New Property
+            </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.total_properties }}</div>
+                <div class="stat-label">My Properties</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.active_properties }}</div>
+                <div class="stat-label">Active Listings</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.total_applications }}</div>
+                <div class="stat-label">Total Applications</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.pending_applications }}</div>
+                <div class="stat-label">Pending Review</div>
+            </div>
+        </div>
+
+        <!-- My Properties -->
+        <div class="mb-xl">
+            <h2 class="mb-md">My Properties</h2>
+
+            {% if properties %}
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Type</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Applications</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for property in properties %}
+                        <tr>
+                            <td>
+                                <div style="font-weight: 600;">{{ property.address[:40] }}{% if property.address|length
+                                    > 40 %}...{% endif %}</div>
+                                <div style="font-size: 0.875rem; color: var(--text-tertiary); margin-top: 4px;">
+                                    ID: {{ property.property_id }}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-primary">{{ property.type|upper }}</span>
+                            </td>
+                            <td style="font-weight: 600;">₹{{ "{:,.0f}".format(property.price) }}</td>
+                            <td>
+                                {% if property.status == 'active' %}
+                                <span class="badge badge-success">Active</span>
+                                {% else %}
+                                <span class="badge badge-secondary">{{ property.status|title }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span style="font-weight: 600;">{{ property.application_count or 0 }}</span>
+                                applications
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: var(--spacing-xs);">
+                                    <a href="/properties/{{ property.property_id }}"
+                                        class="btn btn-sm btn-secondary">View</a>
+                                    <button onclick="deleteProperty('{{ property.property_id }}')"
+                                        class="btn btn-sm btn-danger">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">🏢</div>
+                <h3 class="empty-state-title">No Properties Yet</h3>
+                <p class="empty-state-text">Start by adding your first property listing</p>
+                <a href="/properties/add" class="btn btn-primary">Add Property</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Recent Applications -->
+        <div>
+            <div class="flex flex-between mb-md" style="align-items: center;">
+                <h2>Recent Applications</h2>
+                <a href="/applications" class="btn btn-ghost btn-sm">View All →</a>
+            </div>
+
+            {% if applications %}
+            <div class="grid grid-2">
+                {% for app in applications[:6] %}
+                <div class="card">
+                    <div class="flex flex-between mb-sm">
+                        <span
+                            class="badge badge-{{ 'warning' if app.status == 'pending' else 'success' if app.status == 'approved' else 'danger' }}">
+                            {{ app.status|upper }}
+                        </span>
+                        <span style="font-size: 0.875rem; color: var(--text-tertiary);">
+                            {{ app.request_date }}
+                        </span>
+                    </div>
+
+                    <h4 style="margin-bottom: var(--spacing-xs);">{{ app.property_address }}</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: var(--spacing-md);">
+                        Applicant: {{ app.seeker_name }}
+                    </p>
+
+                    {% if app.status == 'pending' %}
+                    <div style="display: flex; gap: var(--spacing-sm);">
+                        <button onclick="updateApplicationStatus('{{ app.application_id }}', 'approved')"
+                            class="btn btn-sm btn-success">
+                            Approve
+                        </button>
+                        <button onclick="updateApplicationStatus('{{ app.application_id }}', 'rejected')"
+                            class="btn btn-sm btn-danger">
+                            Reject
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">📋</div>
+                <h3 class="empty-state-title">No Applications Yet</h3>
+                <p class="empty-state-text">Applications will appear here when tenants show interest in your properties
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

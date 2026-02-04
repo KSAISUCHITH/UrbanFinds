@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Properties{% endblock %}
+
+{% block content %}
+<section class="section-tight">
+    <div class="container">
+        <div class="flex flex-between mb-xl" style="align-items: center;">
+            <div>
+                <h1>Property Management</h1>
+                <p style="color: var(--text-secondary);">Moderate all platform properties</p>
+            </div>
+            <a href="/dashboard/admin" class="btn btn-ghost">
+                ← Back to Dashboard
+            </a>
+        </div>
+
+        {% if properties %}
+        <div class="grid grid-3">
+            {% for property in properties %}
+            <div class="card">
+                {% if property.images %}
+                <img src="{{ property.images[0] }}" alt="{{ property.type }}" class="card-image">
+                {% endif %}
+
+                <div class="badge badge-primary mb-sm">{{ property.type|upper }}</div>
+                <h3 style="margin-bottom: var(--spacing-xs);">{{ property.address[:50] }}{% if property.address|length >
+                    50 %}...{% endif %}</h3>
+
+                <div class="property-price mb-md" style="font-size: 1.5rem;">
+                    ₹{{ "{:,.0f}".format(property.price) }}
+                </div>
+
+                <div
+                    style="padding-top: var(--spacing-md); border-top: 1px solid var(--divider-color); margin-bottom: var(--spacing-md);">
+                    <div style="font-size: 0.875rem; color: var(--text-tertiary);">Status</div>
+                    <span class="badge badge-{{ 'success' if property.status == 'active' else 'danger' }}"
+                        style="margin-top: 4px;">
+                        {{ property.status|upper }}
+                    </span>
+                </div>
+
+                <div style="display: flex; gap: var(--spacing-xs);">
+                    <a href="/properties/{{ property.property_id }}" class="btn btn-sm btn-secondary" style="flex: 1;">
+                        View
+                    </a>
+                    {% if property.status == 'active' %}
+                    <button onclick="removeProperty('{{ property.property_id }}')" class="btn btn-sm btn-danger">
+                        Remove
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">🏢</div>
+            <h3 class="empty-state-title">No Properties</h3>
+            <p class="empty-state-text">No properties listed yet</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
